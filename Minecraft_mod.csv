@@ -1,0 +1,251 @@
+﻿Your Entry,Mod Name,CurseForge URL,Description
+journeymap,Zord's JourneyMap Icon Additions!,https://www.curseforge.com/minecraft/mc-mods/zords-journeymap-icon-additions,"A resourcepack that aims to add more modded entity icons for
+Journey map
+!
+Link to the mod here!
+Current icons:
+Certain
+mobs will have changed icons dependend on their apperance.
+There are icons for the following mods:
+Naturalist (Probably Finished)
+Creeper Overhaul (Probably Finished)
+Ecologics (Probably Finished)
+Upgrade Aquatic (Not perfect but semi-finished)"
+jei,Extend: JEI Pack,https://www.curseforge.com/minecraft/mc-mods/extend-jei-pack,"I recommend using this resource pack with
+Faithful 32x
+for the best visual effect, but whatever you use it with,
+make sure that Extend: JEI Pack is above all the others in the list for proper functioning.
+Official Faithful Website"
+sodium,Fish Core Sodium,https://www.curseforge.com/minecraft/mc-mods/fish-core,"Please note that extremely crucial mods to the modpack like Halogen/Magnum, projectE, mekanism and much more are currently not up to date, while I have already finished the 1.18.1 version of the modpack I will not release it until these mods will get a update
+Information
+Fish Core is a Modpack designed for Advanced Players (Players who are familiar with Minecraft itself) with strong computers. It is not linear (it does not tell you what to do) this modpack is an expansion to singleplayer without any hand-holding. If you plan on using this modpack make sure to be ready to learn a considerable amount.
+A modpack full of
+The most useful mods like
+:
+JEI, JER,
+Hwyla
+(discontinued)
+, Inventory HUD+, More Overlay, and Inventory Tweaks
+And mods that add  their own dynamic
+:
+Create,
+Ice and Fire
+,
+Tinker's Construct, Mekanism, ProjectE, and Minecolonies
+Basically everything you need for a moded experience From
+Tech and Exploring
+Thru
+Fantasy
+To
+making life easier.
+If you love Automatization and/or Exploring this modpack is for you.
+if you have any questions/problems please
+contact me on discord (click here)
+(for 1.16 versions)
+FOR BEST PERFORMANCE
+In
+Settings
+under
+General
+select These Options:
+Render Distance:
+As low as you want
+Use VSync:
+Disabled
+Max Framerate:
+Unlimited
+In
+Settings
+under
+Advanced
+select These Options:
+Translucency Sorting:
+Disabled
+Use Leaves Culling:
+Enabled
+FAQ
+1. Why don't you add [mod name]?
+If you would like me to add a mod, feel free to contact me on discord. Fish Core Sodium does not support immersive portals, and other mods and resource packs that are dependent on optifine as Fish Core Sodium runs Sodium forge ports as Halogen and Magnesium for much better FPS. Not optifine
+2. Where can I change the modded hud?
+To change Location/Settings of Inventory HUD+ (The mod that 1. Lets you see what is in your inventory 2. Lets you see your armor 3. Lets you see your effects) press ""O"" on your  keyboard
+3. Is there a server for the modpack?
+While the modpack IS made for multiplayer, no server will be created until I receive enough donations to run it. You can donate by clicking the donate button to the right above the categories and next to the follow button.
+COMMON ISSUES
+If your game crashes while creating a world that means that the game has run out of RAM. Search up a tutorial on how to allocate more RAM to Minecraft. If you are on the Curse forge app then search up the tutorial for the curse forge app, and if it still doesn't have enough RAM then your laptop/pc is too weak to run this modpack.
+If your world is stuck at 80-99% generating then restart Minecraft
+(for 1.16 versions) If blocks are invisible then uninstall the halogen mod. It drastically increases performance but causes rendering issues. To be able to edit the mods inside the modpack press the download button on one of the versions (not the install button) and then import the file as a profile into the curse forge app.
+Mods To Be Added When Updated
+Ice and Fire (update unsure)
+Halogen/Magnesium
+Lilac
+Apple Trees Revived
+Back Tools (update unsure)
+Bed Benefits (Update unsure)
+Better End
+Creatures and Beasts
+Damage Tint
+Scary Spider (resource pack)
+Chisel
+Desolation
+Double Slabs
+Ender Storage (Update unsure)
+Endless Ocean: Adventures (Update unsure)
+Extra Boats (Update unsure)
+Hwyla
+(Discontinued)
+Glow bats
+Industrial Foregoing
+Infernal Expansion
+Inventory Tweaks Renewed
+UniDict
+Mekanism
+Mekanism Additions
+Mekanism Generators
+Mekanism Tools
+Unique Enchantments (Update unsure)
+New XP ore (Update unsure)
+Effect Enchantments (Update unsure)
+More Enchantments (Update unsure)
+Mowzie's Mobs
+Mutant Beasts (Update unsure)
+ProjectE
+Slimier Slimes (update unsure)
+Spiders 2.0 (update unsure)
+The Abyss II (update unsure)
+The twilight forest
+Tinkers' mechworks
+Villagers follow emeralds
+wesley's roguelike dungeons
+WorldEditCUI
+Level Up! Reloaded (update unsure)"
+AdditionalStructures,AdditionalStructures Review Map,https://www.curseforge.com/minecraft/mc-mods/additional-structures-review-map,"This is the review map of the
+Additional Structures
+mod, it shows all structures of the respective versions!"
+adventurez,[HTP] AdventureZ | Spanish Translation Pack,https://www.curseforge.com/minecraft/mc-mods/htp-mod-adventurez-pack,"Spanish translations for the AdventureZ mod.
+Supports all spanish variations / slangs.
+How to install
+1. Download the .zip file and put it inside the /resourcepacks folder inside .minecraft
+2. Choose the following language order, and put your preferred variation on the top
+Who are we?
+We're a small team with one simple goal: bring spanish translations to all mods as possible.
+Modded MC has a great chunk of spanish translated mods, but sadly, there's a lot more that aren't. There are also some cases where translations are inconsistent or incomplete.
+That's why we decided to make HTP, to try to fix this task.
+Open Source
+Our project is open source, contribution friendly, and most importantly,
+under the Public Domain.
+If you're a mod developer and want to add our translations officially to your mod, feel free to! We encourage it.
+These pages will still be updated frequently and serve as an unofficial translation, but the content of them is free to use for everyone.
+Contributing
+If you're a native spanish speaker and want to contribute by either adding more translations or proofreading, you can open a
+Pull Request
+in our
+Github Repository
+.
+Donating
+Your best donation is a contribution on our
+Github Repository
+!
+If you don't want to open a pull request, you can always make an issue pointing out stuff to be improved on.
+Due to CurseForge moderation policies the description must be in english, the projects are not getting approved with spanish descriptions."
+deeperdarker-fabric,Not Found,N/A,No description available.
+DistantHorizons-fabric,Not Found,N/A,No description available.
+better-end1,(UNOFFICIAL TRANSLATION) Better Combat PL,https://www.curseforge.com/minecraft/mc-mods/unofficial-translation-better-combat-pl,"Translates Better Combat to Polish
+Original mod link:
+https://www.curseforge.com/minecraft/mc-mods/better-combat-by-daedelus"
+paradise-lost,Parasitic Paradise LITE,https://www.curseforge.com/minecraft/mc-mods/parasitic-paradise-2-0,"This modpack is a new or 2.0 (Lite) version of my other modpack, ""
+Parasitic Paradise
+"". Similarly to Parasitic Paradise, this modpacks main feature is the Scape And Run Parasites mod. There are also a few other mods that add on to this mods machanics and gameplay. Some being ""
+Scape And Run Parasites: Deep Sea Danger
+"", ""
+Scape And Run Parasites: Parasites Quark
+"", and ""
+Scape and Run: Parasites Extra
+"". These three extra mods add onto the parasites featured in the mod itself.
+Other mods like ""
+AmbiantSounds 6
+"", and ""
+Sound Filters
+"" add realistic sound features that make the gameplay more emmersive. There is also a resource pack called ""
+Scape And Run Parasites | Dynamic Sounds
+"" that add these sound effects to the parasites in the mod.
+The reason this mod is a ""
+Lite
+"" version of the original is becuase there are many less mods to smoothen out performance and allow for lower end computers to run the modpack with ease.
+Good luck out there!"
+twilightforest-fabric,TwilightForest+,https://www.curseforge.com/minecraft/mc-mods/twilightforest,"Main action mod is Twilight forest, includes furnature mods like bibliocraft and mrcrayfish, quest mods like mystical world and treasure2, and convenience mods like wearable backpacks and iron chest.
+TO DOWNLOAD (windows):
+(must already have java, if wrong version then redownload right one, the game will tell you which it needs)
+1. download the newest file (unless you want to play a broken modpack) and open it when finished (keep open)
+2. go to
+https://files.minecraftforge.net/maven/net/minecraftforge/forge/index_1.12.2.html
+and in the download recommended box, click on installer, then when the 5 seconds is over, click ""skip"" on the add in the top right corner (you may now exit the page to avoid viruses)
+3. open the java file, click install client. you have now downloaded forge!
+4. in the search bar on your computer (should be in bottom left corner of your screen) type in run, then select the app that appears and type %appdata%
+5. click on the .minecraft folder
+6. go back to the TwilightForest+ folder and open the folder overrides, then copy the config and mods folder (one at a time or both at once)
+7. paste them into the .minecraft folder, they should replace the mod and config folders already there
+8. open your minecraft launcher and click on the installations page in the top left
+9. click on add new, and on versions scroll down until you find ""release 1.12.2 forge-14-23.5.2854"", then select it and press create (name the installation whatever you want)
+you may click on it and play it!
+comment if there are any issues?"
+The_Graveyard3.1(FABRIC)_for,All The Skins,https://www.curseforge.com/minecraft/mc-mods/all-the-skins,"AllTheTotems
+This Fabric Client-Side Mod let's you choose any 3d-Model as your Minecraft Skin.
+Features
+Upload any 3d-Model (in .obj Format) to use as your skin
+Configure settings in the Minecraft Title Screen
+Works on Multiplayer
+Let every Player who uses this Mod see your new skin
+Constraints
+This Mod has some constraints.
+NOTHING is moderated and any player who uses it could (theoratically) upload inappropriate content.
+USE AT YOUR OWN RISK.
+Any account may be blocked from this service with or without a reason.
+The file-size is limited to 5mb to allow for a free use.
+Once the server this is hosted on can't take the load anymore, I reserve the right, to shut down the service at any time.
+THIS IS SUBJECT TO CHANGE AND MAY BE CHANGED AT ANY TIME.
+Installing
+Download it from
+GitHub Releases
+,
+Modrinth
+or
+CurseForge
+Then place it inside your
+mods
+folder for Minecraft.
+Make sure you have Fabric installed!
+Fabric API
+Make sure to include the needed Fabric API.
+You can find it on
+GitHub
+,
+CurseForge
+, or
+Modrinth"
+immersive_weathering,Create Immersive Aircraft : Bamboo Hopper,https://www.curseforge.com/minecraft/mc-mods/create-immersive-aircraft-bamboo-hopper,"Resource Pack
+Changes the textures of ""
+Bamboo Hopper
+"" of the Immersive Aircraft mod to look more like they belong in the Create Mod
+Inspired by nicky__21's Create Immersive Aircrafts and crazyfl_'s Create Immersive Aircraft : Warship
+before
+after
+Obviously Requires Create and Immersive Aircrafts"
+Pehkui,Pehkui Resizer Tools,https://www.curseforge.com/minecraft/mc-mods/pehkui-resizer-tools,"About The mod
+THIS MOD IS FOR FABRIC ONLY!
+This mod is currently ARCHIVED
+Scale Up (item to scale yourself or other entities up)
+Scale Down (item to scale yourself or other entities Down)
+Scale Reset (item to reset your or other entities scale)
+Block to resize according to redstone signal
+(Still Buggy)
+Check recipes in Images tab.
+This mod makes it really easy to resize yourself and other Entities!
+All Items and Blocks can be crafted, so you can use them in Survival!
+About Pehkui
+This mod will not work without
+Pehkui.
+Bugs And/Or Features
+If you find bugs or want to see some features added, just comment
+(or make an issue in the issues tab)
+and I will see what I can do!
+(For questions, just comment)"
