@@ -11,7 +11,7 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGener
 import asyncio
 from dotenv import load_dotenv
 load_dotenv()
-# Fix for 'no current event loop' in Streamlit
+# Setup api keys in .env 
 try:
     asyncio.get_running_loop()
 except RuntimeError:
@@ -169,3 +169,4 @@ for chat in st.session_state.chat_history:
         st.write(chat["question"])
     with st.chat_message("assistant"):
         st.write(chat["answer"])
+
