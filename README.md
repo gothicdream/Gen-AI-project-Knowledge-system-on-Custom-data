@@ -1,4 +1,3 @@
-# Gen-AI-project-Knowledge-system-on-Custom-data
 # GEN AI RAG Project – Minecraft Mod Information Search
 
 This project is a **Generative AI Retrieval-Augmented Generation (RAG) application** that uses **LangChain**, **Vector Databases**, and **Google Generative AI embeddings** to fetch, store, and retrieve Minecraft mod descriptions.  
