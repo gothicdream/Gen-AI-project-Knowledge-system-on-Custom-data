@@ -4,6 +4,7 @@ This project is a **Generative AI Retrieval-Augmented Generation (RAG) applicati
 It includes a **Streamlit interface** to allow users to ask questions about Minecraft mods and receive structured JSON answers.
 
 ---
+## Create and use .env file for api keys.
 
 ## 📌 Features
 - Fetches mod data from **CurseForge API**
