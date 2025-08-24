@@ -1,172 +1,196 @@
+# app.py — Streamlit CSV → Gemini RAG (ChromaDB)
+
 import os
-import time
-import requests
+import io
+import uuid
 import pandas as pd
-from bs4 import BeautifulSoup
+import streamlit as st
 import google.generativeai as genai
 import chromadb
-import streamlit as st
-from langchain_chroma import Chroma
-from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
-import asyncio
-from dotenv import load_dotenv
-load_dotenv()
-# Setup api keys in .env 
-try:
-    asyncio.get_running_loop()
-except RuntimeError:
-    asyncio.set_event_loop(asyncio.new_event_loop())
-# ==============================
-# CONFIGURATION (ENV VARS)
-# ==============================
-CURSEFORGE_API_KEY = os.getenv("CURSEFORGE_API_KEY")
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+from langchain_google_genai import ChatGoogleGenerativeAI
 
-if not CURSEFORGE_API_KEY or not GOOGLE_API_KEY:
-    st.error("Please set CURSEFORGE_API_KEY and GOOGLE_API_KEY as environment variables.")
-    st.stop()
+# -------------------------------
+# Streamlit UI Setup
+# -------------------------------
+st.set_page_config(page_title="Minecraft Mods Q&A", layout="wide")
+st.title("🎮 Minecraft Mods Q&A with Gemini + CSV Upload")
 
-headers = {
-    "Accept": "application/json",
-    "x-api-key": CURSEFORGE_API_KEY
-}
+# Google API Key input
+api_key = st.text_input("🔑 Enter your Google API Key", type="password")
+if api_key:
+    os.environ["GOOGLE_API_KEY"] = api_key
+    genai.configure(api_key=api_key)
 
-mods = [
-    "journeymap", "jei", "sodium", "AdditionalStructures", "adventurez",
-    "deeperdarker-fabric", "DistantHorizons-fabric", "better-end1",
-    "paradise-lost", "twilightforest-fabric", "The_Graveyard3.1(FABRIC)_for",
-    "immersive_weathering", "Pehkui"
-]
+# ChromaDB options
+persist_path = st.text_input("ChromaDB path", value="my_chroma_db")
+collection_name = st.text_input("Collection name", value="minecraft_mods")
+reset_collection = st.checkbox("Reset collection before indexing", value=False)
 
-# ==============================
-# FETCH MOD DATA (Run Once)
-# ==============================
-@st.cache_data
-def fetch_mod_data():
-    mod_data_list = []
-    for mod_entry in mods:
-        clean_name = mod_entry.split("-")[0].replace("_", " ").split("(")[0]
-        search_url = f"https://api.curseforge.com/v1/mods/search?gameId=432&searchFilter={clean_name}"
-        search_res = requests.get(search_url, headers=headers)
+# File uploader
+uploaded_file = st.file_uploader("📂 Upload your Minecraft Mods CSV", type=["csv"]) 
 
-        if search_res.status_code == 200 and search_res.json().get("data"):
-            mod_info = search_res.json()["data"][0]
-            mod_id = mod_info["id"]
-            mod_name = mod_info["name"]
-            mod_slug = mod_info["slug"]
+# Helper: robust CSV loader
+def load_csv_resilient(file) -> pd.DataFrame:
+    raw = file.getvalue()
+    encodings = ["utf-8-sig", "utf-8", "latin1"]
+    seps = [",", ";", "\t", "|"]
 
-            desc_url = f"https://api.curseforge.com/v1/mods/{mod_id}/description"
-            desc_res = requests.get(desc_url, headers=headers)
+    for enc in encodings:
+        for sep in seps:
+            try:
+                buf = io.BytesIO(raw)
+                df = pd.read_csv(buf, encoding=enc, sep=sep)
+                if not df.empty and len(df.columns) >= 1:
+                    return df
+            except Exception:
+                continue
+    for enc in encodings:
+        for sep in seps:
+            try:
+                buf = io.BytesIO(raw)
+                df = pd.read_csv(buf, encoding=enc, sep=sep, header=None)
+                if not df.empty:
+                    df.columns = [f"col_{i}" for i in range(len(df.columns))]
+                    return df
+            except Exception:
+                continue
+    raise ValueError("❌ Could not parse CSV. Please save it as UTF-8 and try again.")
 
-            if desc_res.status_code == 200:
-                raw_html = desc_res.json().get("data", "No description found")
-                desc = BeautifulSoup(raw_html, "html.parser").get_text(separator="\n", strip=True)
+# -------------------------------
+# Main App
+# -------------------------------
+if "collection_ready" not in st.session_state:
+    st.session_state.collection_ready = False
+
+if uploaded_file and api_key:
+    try:
+        df = load_csv_resilient(uploaded_file)
+    except Exception as e:
+        st.error(f"❌ CSV parse error: {e}")
+        st.stop()
+
+    st.write("### 👀 Preview of Uploaded CSV")
+    st.dataframe(df.head())
+
+    # Pick text column for embeddings
+    default_col = "Description" if "Description" in df.columns else df.columns[0]
+    text_column = st.selectbox("Select column to embed", options=list(df.columns), index=list(df.columns).index(default_col))
+
+    # Optional ID column
+    id_default = "Mod Name" if "Mod Name" in df.columns else None
+    id_column = st.selectbox("Optional: ID/Name column (metadata)", options=["<none>"] + list(df.columns), index=(0 if id_default is None else list(["<none>"] + list(df.columns)).index(id_default)))
+
+    if st.button("🚀 Create / Update Embeddings"):
+        client = chromadb.PersistentClient(path=persist_path)
+
+        # Reset collection if chosen
+        if reset_collection:
+            try:
+                client.delete_collection(name=collection_name)
+            except Exception:
+                pass
+
+        collection = client.get_or_create_collection(name=collection_name)
+
+        with st.spinner("Generating embeddings and indexing into ChromaDB... ⏳"):
+            texts = df[text_column].dropna().astype(str).tolist()
+            valid_idx = df[text_column].dropna().index.tolist()
+
+            # Build embeddings
+            embeddings = []
+            for t in texts:
+                try:
+                    res = genai.embed_content(model="models/embedding-001", content=t)
+                    embeddings.append(res["embedding"])
+                except Exception as e:
+                    if embeddings:
+                        embeddings.append([0.0] * len(embeddings[0]))
+                    else:
+                        raise e
+
+            # Generate IDs
+            ids = [f"doc_{i}" for i in range(len(texts))]
+
+            # Metadata
+            if id_column and id_column != "<none>":
+                metas = [{"name": str(df.loc[idx, id_column])} for idx in valid_idx]
             else:
-                desc = "Description fetch failed."
+                metas = [{"row_index": int(idx)} for idx in valid_idx]
 
-            mod_data_list.append({
-                "Your Entry": mod_entry,
-                "Mod Name": mod_name,
-                "CurseForge URL": f"https://www.curseforge.com/minecraft/mc-mods/{mod_slug}",
-                "Description": desc
-            })
-        else:
-            mod_data_list.append({
-                "Your Entry": mod_entry,
-                "Mod Name": "Not Found",
-                "CurseForge URL": "N/A",
-                "Description": "No description available."
-            })
+            # Fetch existing IDs to avoid duplicates
+            try:
+                existing_ids = set(collection.get()["ids"])
+            except Exception:
+                existing_ids = set()
 
-        time.sleep(0.5)
+            new_ids, new_texts, new_metas, new_embeddings = [], [], [], []
+            for i, id_ in enumerate(ids):
+                if id_ not in existing_ids:
+                    new_ids.append(id_)
+                    new_texts.append(texts[i])
+                    new_metas.append(metas[i])
+                    new_embeddings.append(embeddings[i])
 
-    df = pd.DataFrame(mod_data_list)
-    df.to_csv("Minecraft_mod.csv", index=False, encoding="utf-8-sig")
-    return df
+            if new_ids:
+                collection.add(ids=new_ids, documents=new_texts, metadatas=new_metas, embeddings=new_embeddings)
 
-df = fetch_mod_data()
+        st.session_state.collection_ready = True
+        st.success("✅ Embeddings stored in ChromaDB successfully!")
 
-# ==============================
-# CREATE EMBEDDINGS & STORE
-# ==============================
-@st.cache_resource
-def setup_chroma():
-    genai.configure(api_key=GOOGLE_API_KEY)
-    texts = df["Description"].tolist()
-    embeddings = [
-        genai.embed_content(model="models/embedding-001", content=text)["embedding"]
-        for text in texts
-    ]
-    client = chromadb.PersistentClient(path="my_chroma_db")
-    collection = client.get_or_create_collection(name="minecraft_mods")
-    ids = [f"doc_{i}" for i in range(len(df))]
-    metadatas = [{"mod_name": row["Mod Name"]} for _, row in df.iterrows()]
-    collection.add(ids=ids, documents=texts, metadatas=metadatas, embeddings=embeddings)
+# -------------------------------
+# Q&A Section
+# -------------------------------
+if st.session_state.collection_ready and api_key:
+    st.divider()
+    st.subheader("💬 Ask Questions About Your Mods")
 
-    embedding_function = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
-    chroma_db = Chroma(persist_directory="my_chroma_db", embedding_function=embedding_function)
-    return chroma_db
+    client = chromadb.PersistentClient(path=persist_path)
+    collection = client.get_or_create_collection(name=collection_name)
 
-chroma_db = setup_chroma()
-retriever = chroma_db.as_retriever(search_kwargs={"k": 2})
+    llm = ChatGoogleGenerativeAI(
+        model="gemini-2.5-pro",
+        temperature=0.2,
+        google_api_key=os.environ["GOOGLE_API_KEY"],
+    )
 
-llm = ChatGoogleGenerativeAI(
-    model="gemini-2.5-pro",
-    temperature=0.2,
-    google_api_key=GOOGLE_API_KEY
-)
+    question = st.text_input("Type your question here:")
+    top_k = st.slider("Number of docs to retrieve", 1, 10, 3)
 
-# ==============================
-# RAG FUNCTION
-# ==============================
-def get_rag_answer(query: str) -> str:
-    retrieved_docs = retriever.get_relevant_documents(query)
-    context_text = "\n\n".join(doc.page_content for doc in retrieved_docs)
+    if question:
+        with st.spinner("Thinking... 🤔"):
+            q_emb = genai.embed_content(model="models/embedding-001", content=question)["embedding"]
 
-    prompt = f"""
-You are an expert Minecraft mod analyst. You will be provided with textual descriptions of multiple Minecraft mods.
+            results = collection.query(query_embeddings=[q_emb], n_results=top_k)
+            docs = results.get("documents", [[]])[0]
+            metadatas = results.get("metadatas", [[]])[0]
 
-INSTRUCTIONS:
-1. Search the provided context carefully and find the most relevant Minecraft mod(s) that best answer the question.
-2. Extract detailed information about these mods, focusing on accuracy and relevance.
-3. For each mod you find relevant, provide a structured JSON object with:
-   - "Name of the mod"
-   - "Version"
-   - "Description"
-   - "Mod Loader"
-   - "Available Mod Loaders"
-   - "Additional Notes"
-4. Only reply with JSON. If no relevant mod is found, return [].
+            context_chunks = []
+            for i, doc in enumerate(docs):
+                meta = metadatas[i] if i < len(metadatas) else {}
+                name = meta.get("name") or f"Row {meta.get('row_index', i)}"
+                context_chunks.append(f"Source {i+1} - {name}:\n{doc}")
+            context_text = "\n\n".join(context_chunks) if context_chunks else ""
+
+            prompt = f"""
+You are an expert Minecraft mod analyst. Use ONLY the provided context to answer the question.  
+If the answer cannot be determined from the context, simply reply with: "I don’t know based on the given information."
 
 Context:
 {context_text}
 
 Question:
-{query}
+{question}
 
-Answer with JSON only:
+Answer clearly and directly in plain text.  
 """
-    return llm.predict(prompt)
+            try:
+                answer = llm.predict(prompt)
+                st.write(answer)
+            except Exception as e:
+                st.error(f"LLM error: {e}")
 
-# ==============================
-# STREAMLIT UI
-# ==============================
-st.set_page_config(page_title="Minecraft Mods Q&A", page_icon="🎮")
-st.title("🎮 Minecraft Mods Q&A Dashboard")
-
-if "chat_history" not in st.session_state:
-    st.session_state.chat_history = []
-
-user_question = st.chat_input("Ask about any Minecraft mod...")
-
-if user_question:
-    with st.spinner("Fetching answer..."):
-        answer = get_rag_answer(user_question)
-    st.session_state.chat_history.append({"question": user_question, "answer": answer})
-
-for chat in st.session_state.chat_history:
-    with st.chat_message("user"):
-        st.write(chat["question"])
-    with st.chat_message("assistant"):
-        st.write(chat["answer"])
-
+            with st.expander("🔎 Retrieved context (sources)"):
+                for i, doc in enumerate(docs):
+                    meta = metadatas[i] if i < len(metadatas) else {}
+                    name = meta.get("name") or f"Row {meta.get('row_index', i)}"
+                    st.markdown(f"**Source {i+1}: {name}**")
